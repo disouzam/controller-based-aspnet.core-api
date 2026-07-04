@@ -77,7 +77,7 @@ public class TodoItemsController : ControllerBase
         _context.TodoItems.Add(todoitem);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetTodoItem", new { id = todoitem.Id }, todoitem);
+        return CreatedAtAction(nameof(GetTodoItem), new { id = todoitem.Id }, todoitem);
     }
 
     // DELETE: api/TodoItem/5
