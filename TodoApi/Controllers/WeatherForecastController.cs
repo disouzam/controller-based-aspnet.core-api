@@ -5,6 +5,8 @@ using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
+using TodoApi.Models;
+
 namespace TodoApi.Controllers;
 
 [ApiController]
