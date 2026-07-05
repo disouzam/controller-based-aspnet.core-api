@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Azure.Core;
@@ -36,12 +37,10 @@ class GraphHelper
         var clientSecretStr = GraphHelper.settings.ClientSecret;
 
         clientSecretCredential ??= new ClientSecretCredential(tenantIdStr, clientIdStr, clientSecretStr);
+        // Use the default scope, which will request the scopes configured on the app registration
+        var scopes = new[] { ".default" };
 
-        appClient ??= new GraphServiceClient(
-                clientSecretCredential,
-                /* Use the default scope, which will request the scopes
-                   configured on the app registration */
-                ["https://graph.microsoft.com/.default"]);
+        appClient ??= new GraphServiceClient(clientSecretCredential, scopes);
     }
 
     public static async Task<string> GetAppOnlyTokenAsync()
@@ -64,23 +63,27 @@ class GraphHelper
             throw new NullReferenceException("Graph has not been initialized for app-only auth");
 
         var appId = settings?.ClientId.ToString() ?? throw new NullReferenceException("Settings cannot be null");
+        var accessToken = await GetAppOnlyTokenAsync();
 
-        var application = appClient.Applications[appId];
+        var application = await appClient.Applications
+        .GetAsync(requestConfig =>
+        {
+            requestConfig.QueryParameters.Filter = $"appId eq '{appId}'";
+            requestConfig.QueryParameters.Select = new[] { "id", "displayName", "passwordCredentials" };
+        });
 
-        try
+        var appDetails = application?.Value?.FirstOrDefault();
+
+        if (appDetails is null)
         {
-            var appDetails = await application.GetAsync();
-        }
-        catch (Exception)
-        {
-            throw new Exception($"Error retrieving application details for App ID: {appId}");
+            throw new Exception($"Application with Client ID {appId} not found");
         }
 
         // Example implementation, replace with actual Graph API call
         var result = new SecretExpirationDateDto
         {
             SecretId = secretId,
-            ExpirationDate = DateTime.UtcNow.AddDays(30) // Example expiration date
+            ExpirationDate = appDetails.PasswordCredentials[0].EndDateTime?.DateTime,
         };
 
         return result;
