@@ -66,7 +66,15 @@ class GraphHelper
         var appId = settings?.ClientId.ToString() ?? throw new NullReferenceException("Settings cannot be null");
 
         var application = appClient.Applications[appId];
-        var appDetails = await application.GetAsync();
+
+        try
+        {
+            var appDetails = await application.GetAsync();
+        }
+        catch (Exception)
+        {
+            throw new Exception($"Error retrieving application details for App ID: {appId}");
+        }
 
         // Example implementation, replace with actual Graph API call
         var result = new SecretExpirationDateDto

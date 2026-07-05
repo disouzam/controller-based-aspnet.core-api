@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +17,15 @@ public class SecretExpirationDateController : ControllerBase
     [HttpGet("{secretId}")]
     public async Task<ActionResult<SecretExpirationDateDto>> GetSecretExpirationDate(Guid secretId)
     {
-        var result = await GraphHelper.GetSecretExpirationDateAsync(secretId);
-        return Ok(result);
-    }
-
-
-    private async Task<string> GetAccessTokenAsync()
-    {
         try
         {
-            var appOnlyToken = await GraphHelper.GetAppOnlyTokenAsync();
-            return appOnlyToken;
+            var result = await GraphHelper.GetSecretExpirationDateAsync(secretId);
+            return Ok(result);
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"Error getting app-only access token: {ex.Message}");
-            throw;
+            return StatusCode((int)HttpStatusCode.InternalServerError, $"Internal server error: {ex.Message}");
         }
+        
     }
 }
