@@ -2,9 +2,9 @@
 
 using Microsoft.Extensions.Configuration;
 
-namespace TodoApi;
+namespace TodoApi.MicrosoftEntraId;
 
-public class MicrosoftEntraIdSettings
+public class Settings
 {
     public Guid? TenantId { get; set; }
 
@@ -14,7 +14,7 @@ public class MicrosoftEntraIdSettings
 
     public string? ClientSecret { get; set; }
 
-    public static MicrosoftEntraIdSettings LoadSettings()
+    public static Settings LoadSettings()
     {
         IConfiguration config = new ConfigurationBuilder()
             .AddJsonFile("appsettings.json", optional: false)
@@ -22,7 +22,7 @@ public class MicrosoftEntraIdSettings
             .AddUserSecrets<Program>()
             .Build();
 
-        var result = config.GetRequiredSection("MicrosoftEntraID").Get<MicrosoftEntraIdSettings>();
+        var result = config.GetRequiredSection("MicrosoftEntraID").Get<Settings>();
 
         if (result == null)
         {

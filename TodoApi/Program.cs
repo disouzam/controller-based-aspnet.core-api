@@ -6,7 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
-using TodoApi;
+using TodoApi.MicrosoftEntraId;
 using TodoApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,7 +17,7 @@ if (connectionString is null)
     throw new InvalidOperationException("Connection string 'TodoContext' not found.");
 }
 
-var settings = MicrosoftEntraIdSettings.LoadSettings();
+var settings = Settings.LoadSettings();
 
 // Add services to the container.
 builder.Services.AddControllers();
