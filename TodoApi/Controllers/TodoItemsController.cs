@@ -49,21 +49,16 @@ public class TodoItemsController : ControllerBase
     // PUT: api/TodoItems/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutTodoItem(long id, TodoItemDto todoDTO)
+    public async Task<IActionResult> PutTodoItem(long id, TodoItemDtoForPut todoItemDtoForPut)
     {
-        if (id != todoDTO.Id)
-        {
-            return BadRequest();
-        }
-
         var todoItem = await _context.TodoItems.FindAsync(id);
         if (todoItem == null)
         {
             return NotFound();
         }
 
-        todoItem.Name = todoDTO.Name;
-        todoItem.IsComplete = todoDTO.IsComplete;
+        todoItem.Name = todoItemDtoForPut.Name;
+        todoItem.IsComplete = todoItemDtoForPut.IsComplete;
 
         try
         {
