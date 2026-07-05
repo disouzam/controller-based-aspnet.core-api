@@ -21,7 +21,8 @@ public class TodoItemsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoItem>>> GetTodoItem()
     {
-        return await _context.TodoItems.ToListAsync();
+        var result = await _context.TodoItems.ToListAsync();
+        return result;
     }
 
     // GET: api/TodoItem/5
@@ -98,6 +99,7 @@ public class TodoItemsController : ControllerBase
 
     private bool TodoItemExists(long? id)
     {
-        return _context.TodoItems.Any(e => e.Id == id);
+        var result = _context.TodoItems.Any(e => e.Id == id);
+        return result;
     }
 }
