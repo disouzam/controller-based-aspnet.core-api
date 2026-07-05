@@ -6,6 +6,7 @@ using Azure.Identity;
 
 using Microsoft.Graph;
 
+using TodoApi.Dtos;
 using TodoApi.MicrosoftEntraId;
 
 namespace TodoApi.MicrosoftGraph;
@@ -54,5 +55,26 @@ class GraphHelper
         var response = await clientSecretCredential.GetTokenAsync(context);
         var token = response.Token;
         return token;
+    }
+
+    public static async Task<SecretExpirationDateDto> GetSecretExpirationDateAsync(Guid secretId)
+    {
+        // Ensure app client isn't null
+        _ = appClient ??
+            throw new NullReferenceException("Graph has not been initialized for app-only auth");
+
+        var appId = settings?.ClientId.ToString() ?? throw new NullReferenceException("Settings cannot be null");
+
+        var application = appClient.Applications[appId];
+        var appDetails = await application.GetAsync();
+
+        // Example implementation, replace with actual Graph API call
+        var result = new SecretExpirationDateDto
+        {
+            SecretId = secretId,
+            ExpirationDate = DateTime.UtcNow.AddDays(30) // Example expiration date
+        };
+
+        return result;
     }
 }

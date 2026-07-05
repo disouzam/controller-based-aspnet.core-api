@@ -16,14 +16,7 @@ public class SecretExpirationDateController : ControllerBase
     [HttpGet("{secretId}")]
     public async Task<ActionResult<SecretExpirationDateDto>> GetSecretExpirationDate(Guid secretId)
     {
-        var accessToken = await GetAccessTokenAsync();
-
-        var result = new SecretExpirationDateDto
-        {
-            SecretId = secretId,
-            ExpirationDate = DateTime.UtcNow.AddDays(30) // Example expiration date
-        };
-
+        var result = await GraphHelper.GetSecretExpirationDateAsync(secretId);
         return Ok(result);
     }
 
