@@ -79,11 +79,18 @@ class GraphHelper
             throw new Exception($"Application with Client ID {appId} not found");
         }
 
+        var secretDetails = appDetails.PasswordCredentials.FirstOrDefault(pc => pc.KeyId == secretId);
+
+        if (secretDetails is null)
+        {
+            throw new Exception($"Secret with ID {secretId} not found");
+        }
+
         // Example implementation, replace with actual Graph API call
         var result = new SecretExpirationDateDto
         {
             SecretId = secretId,
-            ExpirationDate = appDetails.PasswordCredentials[0].EndDateTime?.DateTime,
+            ExpirationDate = secretDetails.EndDateTime?.DateTime,
         };
 
         return result;
