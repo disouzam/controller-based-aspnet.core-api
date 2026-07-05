@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
 using TodoApi.Dtos;
+using TodoApi.MicrosoftGraph;
 
 namespace TodoApi.Controllers;
 
@@ -15,6 +16,8 @@ public class SecretExpirationDateController : ControllerBase
     [HttpGet("{secretId}")]
     public async Task<ActionResult<SecretExpirationDateDto>> GetSecretExpirationDate(Guid secretId)
     {
+        var accessToken = await GetAccessTokenAsync();
+
         var result = new SecretExpirationDateDto
         {
             SecretId = secretId,
@@ -22,5 +25,20 @@ public class SecretExpirationDateController : ControllerBase
         };
 
         return Ok(result);
+    }
+
+
+    private async Task<string> GetAccessTokenAsync()
+    {
+        try
+        {
+            var appOnlyToken = await GraphHelper.GetAppOnlyTokenAsync();
+            return appOnlyToken;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error getting app-only access token: {ex.Message}");
+            throw;
+        }
     }
 }

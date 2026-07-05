@@ -35,9 +35,6 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Display access token
-await DisplayAccessTokenAsync();
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -53,21 +50,9 @@ app.MapControllers();
 
 app.Run();
 
-
 void InitializeGraph(Settings settings)
 {
     GraphHelper.InitializeGraphForAppOnlyAuth(settings);
 }
 
-async Task DisplayAccessTokenAsync()
-{
-    try
-    {
-        var appOnlyToken = await GraphHelper.GetAppOnlyTokenAsync();
-        Console.WriteLine($"App-only token: {appOnlyToken}");
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"Error getting app-only access token: {ex.Message}");
-    }
-}
+
