@@ -38,3 +38,7 @@ Example of a response
   "expirationDate": "2026-10-04T12:15:19.852"
 }
 ```
+
+# How to build and run
+
+TODO: To be added later
