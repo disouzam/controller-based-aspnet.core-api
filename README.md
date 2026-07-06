@@ -3,3 +3,50 @@
 This repository was created to follow tutorial at https://learn.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-8.0&amp;tabs=visual-studio and play with other aspects of an API implementation.
 
 This code is not intended for production usage and it may contain errors. It is also not intended to be used for anyone else other than being a educational reference, if any, for interested developers.
+
+# The idea
+
+After initial creation of the project - to follow the tutorial as mentioned above - a small experiment to proof a concept before applying to an enterprise application in Production, a new controller with a single GET endpoint was added: `SecretExpirationDateController`
+
+This controller enables that a single application registration retrieves start and expiration dates of a secret of the same application. The details of the application are present in appsettings.Development.json via the object below:
+
+```json
+...
+    "MicrosoftEntraId": {
+        "TenantId": "YOUR_TENANT_ID",
+        "ClientId": "YOUR_CLIENT_ID",
+        "ClientSecretId": "YOUR_CLIENT_SECRET_ID",
+        "ClientSecret": "YOUR_CLIENT_SECRET"
+    },
+...
+```
+
+In the real scenario, a second application registration in Microsoft Entra Id would be used to acquire an access token and then the main application registration used by this API will retrieve the client id from the access token and get the secret id passed as a parameter in the route. With these two informations, and the appropriate permissions granted to the main application by an Entra ID administrator, like `Application.Read.All`, another request will be sent to Microsoft Entra ID using Graph SDK to retrive password credentials - like secret ID, start date and end date of the secret whose secret ID was provided in the request.
+
+```bash
+# Example of a request
+curl -X 'GET' \
+  'https://localhost:7006/api/SecretExpirationDate/fea8421a-be16-447d-8955-ee640b5e1e7f' \
+  -H 'accept: text/plain'
+```
+
+Example of a response
+```json
+{
+  "secretId": "fea8421a-be16-447d-8955-ee640b5e1e7f",
+  "startDate": "2026-07-06T12:15:19.852",
+  "expirationDate": "2026-10-04T12:15:19.852"
+}
+```
+
+Figure 1 shows how a list of secrets would look like. Notice that the start date is not presented in Microsoft Entra ID UI but can be programmatically found as shown in Figure 2.
+
+**Figure 1:** List of secrets for an application (NOTE: these secrets were excluded by the time you are reading)
+![List of secrets for an application](Example-of-Secrets-Management-Panel-In-EntraID.png)
+
+**Figure 2:** Start and expiration date for Secret-6-Custom is shown
+![Start and expiration date for Secret-6-Custom is shown](Request-to-get-start-and-expiration-date-for-secret-6-custom.png)
+
+# How to build and run
+
+TODO: To be added later
