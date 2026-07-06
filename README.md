@@ -39,6 +39,14 @@ Example of a response
 }
 ```
 
+Figure 1 shows how a list of secrets would look like. Notice that the start date is not presented in Microsoft Entra ID UI but can be programmatically found as shown in Figure 2.
+
+**Figure 1:** List of secrets for an application (NOTE: these secrets were excluded by the time you are reading)
+![List of secrets for an application](Example-of-Secrets-Management-Panel-In-EntraID.png)
+
+**Figure 2:** Start and expiration date for Secret-6-Custom is shown
+![Start and expiration date for Secret-6-Custom is shown](Request-to-get-start-and-expiration-date-for-secret-6-custom.png)
+
 # How to build and run
 
 TODO: To be added later
