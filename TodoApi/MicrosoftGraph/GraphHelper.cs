@@ -90,6 +90,7 @@ class GraphHelper
         var result = new SecretExpirationDateDto
         {
             SecretId = secretId,
+            StartDate = secretDetails.StartDateTime?.DateTime,
             ExpirationDate = secretDetails.EndDateTime?.DateTime,
         };
 
