@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
@@ -6,13 +7,24 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using TodoApi.MicrosoftEntraId;
+using TodoApi.MicrosoftGraph;
 using TodoApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("TodoContext") ?? throw new InvalidOperationException("Connection string 'TodoContext' not found.");
+var connectionString = builder.Configuration.GetConnectionString("TodoContext");
+
+if (connectionString is null)
+{
+    throw new InvalidOperationException("Connection string 'TodoContext' not found.");
+}
+
+var settings = Settings.LoadSettings();
+
+// Initialize Graph
+InitializeGraph(settings);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
 builder.Services.AddDbContext<TodoContext>(opt =>
     opt.UseInMemoryDatabase("TodoList"));
@@ -37,3 +49,10 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+void InitializeGraph(Settings settings)
+{
+    GraphHelper.InitializeGraphForAppOnlyAuth(settings);
+}
+
+
